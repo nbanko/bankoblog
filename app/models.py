@@ -76,19 +76,13 @@ class User(UserMixin, db.Model):
 
     def unblock(self, user):
         if self.is_blocking(user):
-            user.blockers.remove(self)
             self.blocked.remove(user)
+            user.blockers.remove(self)
+            
 
     def is_blocking(self, user):
         return self.blocked.filter(
-            blockers.c.blocked_id == user.id).count() > 0
-
-    #def blocked_posts(self):
-     #   blocked = Post.query.join(
-      #      blocked, (blocked.c.blocked_id == Post.user_id)).filter(
-       #         blocked.c.blocker_id == self.id)
-        #own = Post.query.filter_by(user_id=self.id)
-        #return blocked.union(own).order_by(Post.timestamp.desc())       
+            blockers.c.blocked_id == user.id).count() > 0     
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
