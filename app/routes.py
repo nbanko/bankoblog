@@ -127,6 +127,9 @@ def follow(username):
     if user == current_user:
         flash('You cannot follow yourself!')
         return redirect(url_for('user', username=username))
+    if user.is_blocking(current_user):
+        flash('You have been blocked by this person')
+        return redirect(url_for('user', username=username))
     current_user.follow(user)
     db.session.commit()
     flash('You are following {}!'.format(username))

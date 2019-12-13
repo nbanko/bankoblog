@@ -12,17 +12,18 @@
                 {% endif %}
                 <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
                 {% if user == current_user %}
-                <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a> </br> {{ user.blockers.count() }} blocked</p>           
+                <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a> </br> {{ user.blocker.count() }} blocked</p>           
                 {% elif not current_user.is_following(user) %}
                 <p><a href="{{ url_for('follow', username=user.username) }}">Follow</a></p>
                 {% else %}
                 <p><a href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a></p>
                 {% endif %}
-                {% if user != current_user %}
+                {% if user == current_user %}
+                <p>View blocked users</p>
+                {% elif not current_user.is_blocking(user) %}
                 <p><a href="{{ url_for('block', username=user.username) }}">Block</a>
-                {% if not current_user.is_blocking(user) %}
+                {% else %}
                 <p><a href="{{ url_for('unblock', username=user.username) }}">Unblock</a></p>
-                {% endif %}
                 {% endif %}
             </td>
         </tr>
