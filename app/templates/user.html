@@ -18,10 +18,9 @@
                 {% else %}
                 <p><a href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a></p>
                 {% endif %}
-                <p><a href="{{ url_for('block', username=user.username) }}">Block</a></p>
-                
-                <p><a href="{{ url_for('unblock', username=user.username) }}">Unblock</a></p>
-                
+                {% if user != current_user %}
+                <p><a href="{{ url_for('block', username=user.username) }}">Block</a> <a href="{{ url_for('unblock', username=user.username) }}">Unblock</a></p>
+                {% endif %}
             </td>
         </tr>
     </table>
