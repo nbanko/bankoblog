@@ -80,7 +80,14 @@ class User(UserMixin, db.Model):
                    
     def is_blocking(self, user):
         return self.blocker.filter(
-            blocked.c.blocked_id == user.id).count() > 0     
+            blocked.c.blocked_id == user.id).count() > 0    
+
+    def blocked_accounts(self):
+        blockedAccts = Post.query.join(
+            blocked, (blocked.c.blocked_id == Post.user_id)).filter(
+                blocked.c.blocker_id == self.id )
+        return blockedAccts
+       
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(

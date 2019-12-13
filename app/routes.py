@@ -183,6 +183,19 @@ def unblock(username):
     flash('You have unblocked {}.'.format(username))
     return redirect(url_for('user', username=username))
 
+@app.route('/blocked/<id>')
+@login_required
+def blockedAccts(id):
+    page = request.args.get('page', 1, type=int)
+    accounts = current_user.blocked_accounts().paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('blockedAccts', page=accounts.next_num) \
+        if accounts.has_next else None
+    prev_url = url_for('blockedAccts', page=accounts.prev_num) \
+        if accounts.has_prev else None
+    return render_template("blocked.html", title='Blocked Users', posts=accounts.items,
+                          next_url=next_url, prev_url=prev_url)
+
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
