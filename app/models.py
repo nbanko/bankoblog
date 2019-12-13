@@ -32,7 +32,7 @@ class User(UserMixin, db.Model):
     
     blocked = db.relationship( 
         'User', secondary=blocked,
-        primaryjoin=(blocked.c.blocked_id == id),
+        primaryjoin=(blocked.c.blocker_id == id),
         secondaryjoin=(blocked.c.blocked_id == id),
         backref=db.backref('blocked', lazy='dynamic'), lazy='dynamic')
 
