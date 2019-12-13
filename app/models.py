@@ -29,7 +29,6 @@ class User(UserMixin, db.Model):
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
-    
     blocked = db.relationship( 
         'User', secondary=blocked,
         primaryjoin=(blocked.c.blocker_id == id),
@@ -64,7 +63,7 @@ class User(UserMixin, db.Model):
     
     def followed_posts(self):
         followed = Post.query.join(
-            followers, (followers.c.followed_id == Post.user_id)).filter(
+            followers, blocked, (followers.c.followed_id == Post.user_id and Post.user_id != blocked.c.blocked_id)).filter(
                 followers.c.follower_id == self.id)
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
@@ -81,12 +80,12 @@ class User(UserMixin, db.Model):
         return self.blocked.filter(
             blocked.c.blocked_id == user.id).count() > 0
 
-    def blocked_posts(self):
-        blocked = Post.query.join(
-            blocked, (blocked.c.blocked_id == Post.user_id)).filter(
-                blocked.c.blocker_id == self.id)
-        own = Post.query.filter_by(user_id=self.id)
-        return blocked.union(own).order_by(Post.timestamp.desc())       
+    #def blocked_posts(self):
+     #   blocked = Post.query.join(
+      #      blocked, (blocked.c.blocked_id == Post.user_id)).filter(
+       #         blocked.c.blocker_id == self.id)
+        #own = Post.query.filter_by(user_id=self.id)
+        #return blocked.union(own).order_by(Post.timestamp.desc())       
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
