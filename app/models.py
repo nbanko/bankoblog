@@ -11,7 +11,7 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
-blocked = db.Table('blocked',
+blockers = db.Table('blockers',
     db.Column('blocker_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('blocked_id', db.Integer, db.ForeignKey('user.id'))
 )
@@ -30,10 +30,10 @@ class User(UserMixin, db.Model):
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     blocked = db.relationship( 
-        'User', secondary=blocked,
-        primaryjoin=(blocked.c.blocker_id == id),
-        secondaryjoin=(blocked.c.blocked_id == id),
-        backref=db.backref('blocked', lazy='dynamic'), lazy='dynamic')
+        'User', secondary=blockers,
+        primaryjoin=(blockers.c.blocker_id == id),
+        secondaryjoin=(blockers.c.blocked_id == id),
+        backref=db.backref('blockers', lazy='dynamic'), lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -63,7 +63,7 @@ class User(UserMixin, db.Model):
     
     def followed_posts(self):
         followed = Post.query.join(
-            followers, blocked, (followers.c.followed_id == Post.user_id and Post.user_id != blocked.c.blocked_id)).filter(
+            followers, blockers, (followers.c.followed_id == Post.user_id and Post.user_id != blockers.c.blocked_id)).filter(
                 followers.c.follower_id == self.id)
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
