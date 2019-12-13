@@ -157,6 +157,9 @@ def block(username):
     if user == current_user:
         flash('You cannot block yourself!')
         return redirect(url_for('user', username=username))
+    if user.is_following != 0 :
+         flash('You will no longer follow this user')
+         current_user.unfollow(user)
     current_user.block(user)
     db.session.commit()
     flash('You have blocked {}!'.format(username))
