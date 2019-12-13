@@ -71,7 +71,7 @@ class User(UserMixin, db.Model):
     def block(self, user):
         if not self.is_blocking(user):
             self.blockers.append(user)
-        if user.is_following(user):
+        if user.is_following(self):
             user.followed.remove(self)
 
     def unblock(self, user):
