@@ -84,7 +84,7 @@ class User(UserMixin, db.Model):
     def blocked_posts(self):
         blocked = Post.query.join(
             blocked, (blocked.c.blocked_id == Post.user_id)).filter(
-                blocked.c.blocked_id == self.id)
+                blocked.c.blocker_id == self.id)
         own = Post.query.filter_by(user_id=self.id)
         return blocked.union(own).order_by(Post.timestamp.desc())       
 
