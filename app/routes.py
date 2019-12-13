@@ -157,7 +157,7 @@ def block(username):
     if user == current_user:
         flash('You cannot block yourself!')
         return redirect(url_for('user', username=username))
-    current_user.follow(user)
+    current_user.block(user)
     db.session.commit()
     flash('You have blocked {}!'.format(username))
     return redirect(url_for('user', username=username))
@@ -172,7 +172,7 @@ def unblock(username):
     if user == current_user:
         flash('You cannot unblock yourself!')
         return redirect(url_for('user', username=username))
-    current_user.unfollow(user)
+    current_user.unblock(user)
     db.session.commit()
     flash('You have unblocked {}.'.format(username))
     return redirect(url_for('user', username=username))
