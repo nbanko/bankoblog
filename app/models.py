@@ -70,15 +70,15 @@ class User(UserMixin, db.Model):
 
     def block(self, user):
         if not self.is_blocking(user):
-            self.blocked.append(user)
+            self.blockers.append(user)
 
     def unblock(self, user):
         if self.is_blocking(user):
-            self.blocked.remove(user)
+            self.blockers.remove(user)
 
     def is_blocking(self, user):
         return self.blocked.filter(
-            blocked.c.blocked_id == user.id).count() > 0
+            blockers.c.blocked_id == user.id).count() > 0
 
     #def blocked_posts(self):
      #   blocked = Post.query.join(
