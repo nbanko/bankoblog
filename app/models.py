@@ -76,7 +76,7 @@ class User(UserMixin, db.Model):
 
     def unblock(self, user):
         if self.is_blocking(user):
-            self.blocked.remove(user)
+            self.blockers.remove(user)
             self.blockers.remove(self)
 
     def is_blocking(self, user):
