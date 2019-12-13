@@ -81,7 +81,7 @@ class User(UserMixin, db.Model):
 
     def is_blocking(self, user):
         return self.blocked.filter(
-            blockers.c.blocked_id == user.id).count() > 0
+            blockers.c.blocker_id == user.id).count() > 0
 
     #def blocked_posts(self):
      #   blocked = Post.query.join(
