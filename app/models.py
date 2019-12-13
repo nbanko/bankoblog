@@ -77,11 +77,11 @@ class User(UserMixin, db.Model):
     def unblock(self, user):
         if self.is_blocking(user):
             self.blocked.remove(user)
-            self.blockers.remove(user)
+            self.blockers.remove(self)
 
     def is_blocking(self, user):
         return self.blocked.filter(
-            blockers.c.blocker_id == user.id).count() > 0
+            blockers.c.blocked_id == user.id).count() > 0
 
     #def blocked_posts(self):
      #   blocked = Post.query.join(
